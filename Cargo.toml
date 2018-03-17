@@ -1,0 +1,26 @@
+[package]
+name = "slog-conf"
+version = "0.1.0"
+authors = ["qzed <qzed@users.noreply.github.com>"]
+description = "Highly customizable runtime-configuration for slog with opinionated defaults"
+
+[dependencies]
+serde = "1.0.30"
+serde_derive = "1.0.30"
+serde_tagged = "0.2.0"
+erased-serde = "0.3.3"
+lazy_static = "1.0.0"
+failure = "0.1.1"
+slog = "2.1.1"
+slog-async = "2.2.0"
+slog-term = { version = "2.3.0", optional = true }
+slog-json = { version = "2.2.0", optional = true }
+
+[dev-dependencies]
+serde_yaml = "0.7.3"
+
+[features]
+default = ["plain", "term", "json"]
+plain = ["slog-term"]
+term = ["slog-term"]
+json = ["slog-json"]
