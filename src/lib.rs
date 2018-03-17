@@ -1,5 +1,48 @@
 //! Highly customizable runtime-configuration for slog-rs/slog with
 //! opinionated defaults.
+//! 
+//! # Overview
+//!
+//! This crate is roughly divided into two parts:
+//!
+//! 1. De-/serialization of configuration files.
+//! 2. Construction of a `Drain` (or `Logger`) from a configuration object.
+//!
+//! Both aspects can be configured, all defaults can be completely replaced.
+//! 
+//! Most of the functionality is centered around the [`Config`](Config) trait
+//! and trait-objects of that type. This trait describes a configuration with
+//! which a logger (or drain) can be built.
+//!
+//! ## De-/Serialization
+//!
+//! Serialization of configurations is straight-forward except for a small
+//! detail. Configurations should always be serialized as trait-object,
+//! otherwise their `type` tag will not be included during serialization and
+//! thus deserialization will fail.
+//! 
+//! Deserialization of `Box<Config>` can be acheived by use of the `deserialize`
+//! function of a [`Deserializers`](Deserializers)-registry. A default registry
+//! is provided by the [`deserializers`](deserializers)-method. This default
+//! registry will be used if `Box<Config>` is directly deserialized.
+//! 
+//! Custom deserialization can, for example, be implemented with a
+//! newtype-wrapper for `Box<Config>` and a custom registry.
+//!  
+//! ## Building a Logger
+//!
+//! Constructing a logger from a [`Config`](Config) trait-object can be done
+//! via a [`Factories`](Factories) registry. A default registry is provided
+//! via the [`factories`](factories)-method. [`build`](build) is a
+//! convenience-method using this default registry to build a `Drain`.
+//! 
+//! ## Customizable Features for Compile-Time Configuration
+//! 
+//! The configuration types and default factories supported by this crate can
+//! be found in the [`ty`](ty) module and can be configured via the
+//! feature-set of this crate. For each supported type exists is a
+//! corresponding feature with the same name enabling support for said type.
+//! By default, all types are enabled.
 
 extern crate serde;
 extern crate serde_tagged;
@@ -124,7 +167,7 @@ impl Default for Deserializers {
 impl Default for Factories<(Async, AsyncGuard)> {
     /// Returns a registry containing default factories for all supported
     /// configuration-types.
-    /// 
+    ///
     /// See [`ty`](::ty) for the default factories.
     fn default() -> Self {
         let mut reg = Factories::empty();
@@ -176,9 +219,9 @@ pub trait Config: erased_serde::Serialize + 'static {
     fn ty(&self) -> &'static str;
 
     /// The type-id of the configuration implementation.
-    /// 
+    ///
     /// # Warning
-    /// 
+    ///
     /// You should not implement this method manually.
     fn type_id(&self) -> TypeId {
         TypeId::of::<Self>()
@@ -274,7 +317,7 @@ impl<F: Factory + Sync> FactoryShim for Unchecked<F> {
 
 
 /// A registry for factories.
-/// 
+///
 /// This registry allows for a mapping from the configuration-type associated
 /// with a factory-type to an instance of this factory-type. Furthermore it
 /// allows the creation of a `T` from a trait-object of type `Config` in a
@@ -294,7 +337,7 @@ impl<T> Factories<T> {
 
     /// Register the provided factory for its associated configuration type
     /// (`F::Config`).
-    /// 
+    ///
     /// Returns `true` if the configuration type has already been associated
     /// with a factory befor this call. Any previous mapping is being replaced.
     pub fn register<F>(&mut self, factory: F) -> bool
@@ -347,12 +390,12 @@ impl<T> Factories<T> {
     }
 
     /// Build a `T` from the specified `Config`-object in a type-safe manner.
-    /// 
+    ///
     /// The `build` method of the factory associated with the actual type of the
     /// configuration-object will be invoked for the creation of the `T` value.
     /// If no factory is associated with the configuration-type,
     /// [`Error::Unsupported`](::Error::Unsupported) will be returned.
-    /// 
+    ///
     /// Internally, the trait-object is being casted to the actual
     /// configuration-type of the factory. If this cast fails, this function
     /// will panic. This cast should not fail, as the factory is directly
@@ -371,7 +414,7 @@ impl<T> Factories<T> {
 
 /// A registry for `DeserializeSeed` implementations for deserialization of
 /// `Config` trait-objects.
-/// 
+///
 /// This registry allows for deserialization of `Config` trait-objects based on
 /// their `type` tag by providing a dynamically dispatched implementation of
 /// `DeserializeSeed`.
@@ -388,13 +431,13 @@ impl Deserializers {
     }
 
     /// Registers a closure as `DeserializeSeed` for the specified type-tag.
-    /// 
+    ///
     /// Thre registered deserializer will be used for deserializing a `Config`
     /// object with the specified value as `type`.
-    /// 
+    ///
     /// Returns the `DeserializeSeed` previously associated with the specified
     /// type-tag, or `None` if no such entry existed.
-    /// 
+    ///
     /// This method is a convenience-wrapper around `insert`.
     pub fn register<F>(&mut self, tag: &'static str, seed: F) -> Option<BoxFnSeed<Box<Config>>>
     where
@@ -441,7 +484,7 @@ pub mod erased {
 
     /// A trait providing a deserialization-mehtod for `Config` trait-objects
     /// with the correct signature required for `BoxFnSeed`.
-    /// 
+    ///
     /// This trait is automatically implemented for all types implementing
     /// `serde::Deserialize` and `Config` and should not have to be implemented
     /// manually.
