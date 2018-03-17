@@ -1,5 +1,10 @@
 # Slog Conf
 
+[![Build Status]][travis]
+
+[Build Status]: https://api.travis-ci.org/qzed/slog-conf.svg?branch=master
+[travis]: https://travis-ci.org/qzed/slog-conf
+
 Highly customizable runtime-configuration for [`slog-rs/slog`][slog] and its backends with opinionated defaults.
 
 This crate can be used to create and configure a `slog` logger using configuration files.
