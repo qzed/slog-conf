@@ -266,14 +266,25 @@ impl Into<slog::Level> for Level {
     }
 }
 
+impl Level {
+    fn to_str_lowercase(&self) -> &'static str {
+        match *self {
+            Level::Critical => "critical",
+            Level::Error => "error",
+            Level::Warning => "warning",
+            Level::Info => "info",
+            Level::Debug => "debug",
+            Level::Trace => "trace",
+        }
+    }
+}
+
 impl Serialize for Level {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        let level: slog::Level = (*self).into();
-        let level = level.as_str().to_lowercase();
-        serializer.serialize_str(&level)
+        serializer.serialize_str(self.to_str_lowercase())
     }
 }
 
@@ -344,5 +355,24 @@ pub enum Timestamp {
 impl Default for Timestamp {
     fn default() -> Self {
         Timestamp::Rfc3339Utc
+    }
+}
+
+
+/// A `slog::Value`-implementation displaying the tag of the log-record if it is
+/// not empty.
+pub struct OptionalTag;
+
+impl slog::Value for OptionalTag {
+    fn serialize(&self, record: &slog::Record, key: slog::Key, serializer: &mut slog::Serializer)
+        -> slog::Result
+    {
+        let tag = record.tag();
+
+        if !tag.is_empty() {
+            serializer.emit_str(key, record.tag())
+        } else {
+            Ok(())
+        }
     }
 }

@@ -5,6 +5,7 @@
 
 use Error;
 pub use common::{Level, OpenMode, Target, Timestamp};
+use common::OptionalTag;
 
 use std;
 
@@ -56,9 +57,17 @@ impl ::Config for Config {
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Format {
-    /// Basic key-value pairs. Provides the timestamp (`ts`), the log-level
-    /// (`level`) and the message (`msg`).
+    /// Basic key-value pairs.
+    /// 
+    /// Provides the log-level (`level`), the timestamp (`ts`), and the message
+    /// (`msg`).
     Basic,
+
+    /// Basic key-value pairs with tag.
+    /// 
+    /// Provides the log-level (`level`), the timestamp (`ts`), the message
+    /// (`msg`), and an optional tag (`tag`).
+    Tagged,
 }
 
 impl Default for Format {
@@ -113,6 +122,20 @@ where
                 "ts" => PushFnValue(timestamp_iso8601_loc),
                 "level" => FnValue(|r| r.level().as_short_str()),
                 "msg" => PushFnValue(|r, s| s.emit(r.msg())),
+            )),
+        },
+        Format::Tagged => match cfg.timestamp {
+            Timestamp::Rfc3339Utc => builder.add_key_value(o!(
+                "ts" => PushFnValue(timestamp_iso8601_utc),
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "msg" => PushFnValue(|r, s| s.emit(r.msg())),
+                "tag" => OptionalTag,
+            )),
+            Timestamp::Rfc3339Local => builder.add_key_value(o!(
+                "ts" => PushFnValue(timestamp_iso8601_loc),
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "msg" => PushFnValue(|r, s| s.emit(r.msg())),
+                "tag" => OptionalTag,
             )),
         },
     };
