@@ -7,6 +7,8 @@
 
 Highly customizable runtime-configuration for [`slog-rs/slog`][slog] and its backends with opinionated defaults.
 
+- [API Documentation][doc]
+
 This crate can be used to create and configure a `slog` logger using configuration files.
 It takes care of serialization, deserialization, and creation of `Drain`s and `Logger`s.
 While the defaults provided by this crate are somewhat opinionated (i.e. always creating an `Async` drain using [`slog_async`][slog-async]), all of these default implementations can be replaced by your custom implementations without too much of a hassle.
@@ -40,3 +42,4 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 [slog]: https://github.com/slog-rs/slog
 [slog-async]: https://github.com/slog-rs/async
+[doc]: https://qzed.github.io/slog-conf/slog_conf
