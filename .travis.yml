@@ -17,6 +17,8 @@ script:
   - cargo build --verbose --all
   - cargo test --verbose --all
   - cargo run --example plain
+  - cargo run --example term
+  - cargo run --example json
 
 jobs:
   allow_failures:
