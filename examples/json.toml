@@ -1,6 +1,6 @@
 type = "json"
 target = "stdout"
-format = "tagged"
+format = "bunyan"
 level = "debug"
 timestamp = "rfc3339-utc"
 newlines = true
@@ -25,6 +25,8 @@ pretty = false
 #   message as msg)
 # - "winston" (a winston-style format, contains timestamp, level, an optional
 #   tag as label, and the message)
+# - "bunyan" (a bunyan-style format, see
+#   https://github.com/trentm/node-bunyan#core-fields for details)
 
 # => level
 # filter level
