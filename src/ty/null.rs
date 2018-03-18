@@ -11,7 +11,7 @@ use slog_async::{Async, AsyncGuard};
 
 
 /// Configuration for a logger of type `null`.
-#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct Config;
 
 impl ::Config for Config {
