@@ -6,16 +6,16 @@ extern crate toml;
 
 use slog::Drain;
 
-use slog_conf::{Config, PlainConfig};
+use slog_conf::{Config, TermConfig};
 
 
 fn main() {
     // load a configuration with the default deserializers
-    let config: Box<Config> = toml::from_str(include_str!("plain.toml")).unwrap();
+    let config: Box<Config> = toml::from_str(include_str!("term.toml")).unwrap();
 
     // show what we have just loaded
-    println!("-- PlainConfig ------------");
-    println!("{:#?}\n", config.downcast_ref::<PlainConfig>().unwrap());
+    println!("-- TermConfig ------------");
+    println!("{:#?}\n", config.downcast_ref::<TermConfig>().unwrap());
 
     // show it again, this time as toml output (via serialization)
     // Note: we have to use an intermediate `toml::Value` here because TOML
@@ -24,7 +24,7 @@ fn main() {
     // should not be necessary for other formats.
     let val = toml::Value::try_from(&*config).unwrap();
     let out = toml::to_string_pretty(&val).unwrap();
-    println!("-- PlainConfig as TOML ----");
+    println!("-- TermConfig as TOML ----");
     println!("{}\n", out);
 
     // build a logger

@@ -1,0 +1,37 @@
+type = "term"
+target = "stderr"
+format = "full"
+level = "debug"
+timestamp = "rfc3339-utc"
+color = "auto"
+
+# => target
+# can be one of
+# - "stdout" (default)
+# - "stderr"
+
+# => target.mode
+# can be one of
+# - "append" (default, appends-to or creates a file)
+# - "truncates" (default, truncates or creates a file)
+# - "new" (requires that a file does not exist previously)
+
+# => format
+# can be one of
+# - "full" (repeats every piece of information on each line)
+# - "compact" (a more compact and hierarchical format)
+
+# => level
+# filter level
+# can be one of ["trace", "debug", "info", "warning", "error", "critical"]
+
+# => timestamp
+# can be one of
+# - "rfc3339-utc" (UTC time formatted in RFC-3339 style)
+# - "rfc3339-local" (local time formatted in RFC-3339 style)
+
+# => color
+# can be one of
+# - "auto" (enable colors depending on terminal)
+# - "disable" (disable colors)
+# - "force" (force-enable colors)
