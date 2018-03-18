@@ -33,6 +33,16 @@ jobs:
         - travis_wait ./.ci/travis-install-clippy.sh
       script:
         - cargo +$NIGHTLY clippy --verbose --all -- -D warnings
+    - stage: upload docs
+      if: (branch = master) AND (type != pull_request)
+      rust: nightly
+      script:
+        - cargo doc
+      deploy:
+        provider: pages
+        github-token: $GITHUB_TOKEN
+        skip-cleanup: true
+        local-dir: target/doc
 
 branches:
   only:
