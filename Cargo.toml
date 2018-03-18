@@ -34,3 +34,7 @@ required-features = ["plain"]
 [[example]]
 name = "term"
 required-features = ["term"]
+
+[[example]]
+name = "json"
+required-features = ["json"]
