@@ -61,7 +61,7 @@ extern crate lazy_static;
 extern crate slog;
 extern crate slog_async;
 
-#[cfg(feature = "plain")]
+#[cfg(any(feature = "plain", feature = "term"))]
 extern crate slog_term;
 
 extern crate chrono;
@@ -88,6 +88,9 @@ pub use ty::null::{Config as NullConfig, Factory as NullFactory};
 #[cfg(feature = "plain")]
 pub use ty::plain::{Config as PlainConfig, Factory as PlainFactory};
 
+#[cfg(feature = "term")]
+pub use ty::term::{Config as TermConfig, Factory as TermFactory};
+
 
 /// The name of the field containing the type of a serialized logger
 /// configuration.
@@ -104,6 +107,8 @@ pub const SUPPORTED_TYPES: &[&str] = &[
     "null",
     #[cfg(feature = "plain")]
     "plain",
+    #[cfg(feature = "term")]
+    "term",
 ];
 
 /// Returns a reference to the default deserializer-stub registry.
@@ -166,6 +171,9 @@ impl Default for Deserializers {
         #[cfg(feature = "plain")]
         reg.register("plain", PlainConfig::deserialize_config);
 
+        #[cfg(feature = "term")]
+        reg.register("term", TermConfig::deserialize_config);
+
         reg
     }
 }
@@ -185,6 +193,9 @@ impl Default for Factories<(Async, AsyncGuard)> {
 
         #[cfg(feature = "plain")]
         reg.register(PlainFactory);
+
+        #[cfg(feature = "term")]
+        reg.register(TermFactory);
 
         reg
     }
