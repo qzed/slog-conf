@@ -58,22 +58,30 @@ impl ::Config for Config {
 #[serde(rename_all = "lowercase")]
 pub enum Format {
     /// Basic key-value pairs.
-    /// 
+    ///
     /// Provides the log-level (`level`), the timestamp (`ts`), and the message
     /// (`msg`).
     Basic,
 
     /// Basic key-value pairs with tag.
-    /// 
+    ///
     /// Provides the log-level (`level`), the timestamp (`ts`), the message
     /// (`msg`), and an optional tag (`tag`).
     Tagged,
 
     /// A basic winston-style format.
-    /// 
+    ///
     /// Provides the log-level (`level`), the timestamp (`timestamp`), the
     /// message (`message`), and an optional tag (`label`).
     Winston,
+
+    /// Bunyan-style format.
+    ///
+    /// Contains all required bunyan core fields. Have a look at the [bunyan
+    /// documentation](https://github.com/trentm/node-bunyan#core-fields) for
+    /// details.
+    #[cfg(feature = "json-bunyan")]
+    Bunyan,
 }
 
 impl Default for Format {
@@ -158,6 +166,27 @@ where
                 "timestamp" => PushFnValue(timestamp_iso8601_loc),
             )),
         },
+        #[cfg(feature = "json-bunyan")]
+        Format::Bunyan => match cfg.timestamp {
+            Timestamp::Rfc3339Utc => builder.add_key_value(o!(
+                "msg" => PushFnValue(|r, s| s.emit(r.msg())),
+                "level" => FnValue(|r| bunyan::level(r.level())),
+                "pid" => bunyan::pid(),
+                "name" => bunyan::name(),
+                "hostname" => bunyan::hostname(),
+                "time" => PushFnValue(timestamp_iso8601_utc),
+                "v" => 0u8,
+            )),
+            Timestamp::Rfc3339Local => builder.add_key_value(o!(
+                "msg" => PushFnValue(|r, s| s.emit(r.msg())),
+                "level" => FnValue(|r| bunyan::level(r.level())),
+                "pid" => bunyan::pid(),
+                "name" => bunyan::name(),
+                "hostname" => bunyan::hostname(),
+                "time" => PushFnValue(timestamp_iso8601_loc),
+                "v" => 0u8,
+            )),
+        },
     };
 
     let drain = builder
@@ -189,4 +218,60 @@ fn timestamp_iso8601_loc<'c, 'd>(_: &'c Record<'d>, s: PushFnValueSerializer<'c>
 mod default {
     pub fn newlines() -> bool { true }
     pub fn pretty() -> bool { false }
+}
+
+mod bunyan {
+    use std;
+    use slog::Level;
+
+    pub fn level(level: Level) -> u8 {
+        match level {
+            Level::Critical => 60,
+            Level::Error => 50,
+            Level::Warning => 40,
+            Level::Info => 30,
+            Level::Debug => 20,
+            Level::Trace => 10,
+        }
+    }
+
+    pub fn name() -> String {
+        let path = std::env::current_exe().ok();
+        let name = path.as_ref().and_then(|path| path.file_name());
+
+        name.and_then(|name| name.to_str())
+            .map(|name| name.to_owned())
+            .unwrap_or_else(|| "<unknown>".into())
+    }
+
+    pub fn hostname() -> String {
+        #[cfg(unix)]
+        use libc::gethostname;
+
+        #[cfg(windows)]
+        use winapi::um::winsock2::gethostname;
+
+        const MAXLEN: usize = 256;
+
+        let mut buf = [0 as std::os::raw::c_char; MAXLEN];
+        let err = unsafe { gethostname(buf.as_mut_ptr() as *mut _, MAXLEN as _) };
+
+        let name = if err == 0 {
+            unsafe { std::ffi::CStr::from_ptr(buf.as_ptr()).to_str().ok() }
+        } else {
+            None
+        };
+
+        name.unwrap_or("<unknown>").to_owned()
+    }
+
+    pub fn pid() -> u64 {
+        #[cfg(unix)]
+        use libc::getpid;
+
+        #[cfg(windows)]
+        use winapi::um::processthreadsapi::GetCurrentProcessId as getpid;
+
+        unsafe { getpid() as u64 }
+    }
 }

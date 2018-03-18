@@ -58,7 +58,7 @@ extern crate failure;
 #[macro_use]
 extern crate lazy_static;
 
-#[macro_use]
+#[cfg_attr(feature = "json", macro_use)]
 extern crate slog;
 extern crate slog_async;
 
@@ -67,6 +67,12 @@ extern crate slog_term;
 
 #[cfg(feature = "json")]
 extern crate slog_json;
+
+#[cfg(all(unix, feature = "json-bunyan"))]
+extern crate libc;
+
+#[cfg(all(windows, feature = "json-bunyan"))]
+extern crate winapi;
 
 extern crate chrono;
 
