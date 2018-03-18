@@ -21,7 +21,8 @@ slog-json = { version = "2.2.0", optional = true }
 toml = "0.4.5"
 
 [features]
-default = ["plain", "term", "json"]
+default = ["null", "plain", "term", "json"]
+null = []
 plain = ["slog-term"]
 term = ["slog-term"]
 json = ["slog-json"]

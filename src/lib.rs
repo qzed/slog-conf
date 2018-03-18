@@ -82,6 +82,9 @@ use slog_async::{Async, AsyncGuard};
 pub mod common;
 pub mod ty;
 
+#[cfg(feature = "null")]
+pub use ty::null::{Config as NullConfig, Factory as NullFactory};
+
 #[cfg(feature = "plain")]
 pub use ty::plain::{Config as PlainConfig, Factory as PlainFactory};
 
@@ -97,6 +100,8 @@ pub const TYPE_KEY: &str = "type";
 /// The set of supported configuration types can be configured by the feature
 /// set of this crate.
 pub const SUPPORTED_TYPES: &[&str] = &[
+    #[cfg(feature = "null")]
+    "null",
     #[cfg(feature = "plain")]
     "plain",
 ];
@@ -155,6 +160,9 @@ impl Default for Deserializers {
         use erased::DeserializeConfig;
         let mut reg = Deserializers::empty();
 
+        #[cfg(feature = "null")]
+        reg.register("null", NullConfig::deserialize_config);
+
         #[cfg(feature = "plain")]
         reg.register("plain", PlainConfig::deserialize_config);
 
@@ -171,6 +179,9 @@ impl Default for Factories<(Async, AsyncGuard)> {
     /// See [`ty`](::ty) for the default factories.
     fn default() -> Self {
         let mut reg = Factories::empty();
+
+        #[cfg(feature = "null")]
+        reg.register(NullFactory);
 
         #[cfg(feature = "plain")]
         reg.register(PlainFactory);
