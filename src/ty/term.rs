@@ -15,7 +15,7 @@ use slog_term::{CompactFormat, Decorator, FullFormat, TermDecorator};
 use chrono::{Local, Utc};
 
 
-#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct Config {
     /// The target to which the logger should write.
     #[serde(default)]
