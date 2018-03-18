@@ -68,6 +68,12 @@ pub enum Format {
     /// Provides the log-level (`level`), the timestamp (`ts`), the message
     /// (`msg`), and an optional tag (`tag`).
     Tagged,
+
+    /// A basic winston-style format.
+    /// 
+    /// Provides the log-level (`level`), the timestamp (`timestamp`), the
+    /// message (`message`), and an optional tag (`label`).
+    Winston,
 }
 
 impl Default for Format {
@@ -136,6 +142,20 @@ where
                 "level" => FnValue(|r| r.level().as_short_str()),
                 "msg" => PushFnValue(|r, s| s.emit(r.msg())),
                 "tag" => OptionalTag,
+            )),
+        },
+        Format::Winston => match cfg.timestamp {
+            Timestamp::Rfc3339Utc => builder.add_key_value(o!(
+                "timestamp" => PushFnValue(timestamp_iso8601_utc),
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "message" => PushFnValue(|r, s| s.emit(r.msg())),
+                "label" => OptionalTag,
+            )),
+            Timestamp::Rfc3339Local => builder.add_key_value(o!(
+                "timestamp" => PushFnValue(timestamp_iso8601_loc),
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "message" => PushFnValue(|r, s| s.emit(r.msg())),
+                "label" => OptionalTag,
             )),
         },
     };
