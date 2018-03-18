@@ -15,6 +15,7 @@ use slog_term::{CompactFormat, Decorator, FullFormat, TermDecorator};
 use chrono::{Local, Utc};
 
 
+/// Configuration for a logger of type `term`.
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct Config {
     /// The target to which the logger should write.
@@ -129,7 +130,7 @@ where
             let format = format
                 .use_original_order()
                 .build()
-                .filter_level((&cfg.level).into())
+                .filter_level(cfg.level.into())
                 .fuse();
 
             build_2(cfg, format)
@@ -142,7 +143,7 @@ where
                 Timestamp::Rfc3339Local => format.use_custom_timestamp(timestamp_iso8601_local),
             };
 
-            let format = format.build().filter_level((&cfg.level).into()).fuse();
+            let format = format.build().filter_level(cfg.level.into()).fuse();
 
             build_2(cfg, format)
         },

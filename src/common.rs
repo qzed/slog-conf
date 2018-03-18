@@ -10,7 +10,7 @@ use slog;
 
 
 /// The modes in which a log file can be opened.
-/// 
+///
 /// The default mode is [`Append`](OpenMode::Append).
 #[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -36,9 +36,9 @@ impl Default for OpenMode {
 
 
 /// The output-target for a terminal-based logger.
-/// 
+///
 /// Defaults to [`Stdout`](TermTarget::Stdout).
-/// 
+///
 /// See [`Target`](Target) for a target that can represent arbitrary files.
 #[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -58,9 +58,9 @@ impl Default for TermTarget {
 
 
 /// The output-target for a logger capable of writing to the terminal and files.
-/// 
+///
 /// Defaults to [`Stdout`](Target::Stdout).
-/// 
+///
 /// See [`TermTarget`](TermTarget) for a target that can only represent terminal output.
 #[derive(Debug, PartialEq, Clone)]
 pub enum Target {
@@ -253,9 +253,9 @@ impl From<slog::Level> for Level {
     }
 }
 
-impl<'a> Into<slog::Level> for &'a Level {
+impl Into<slog::Level> for Level {
     fn into(self) -> slog::Level {
-        match *self {
+        match self {
             Level::Critical => slog::Level::Critical,
             Level::Error => slog::Level::Error,
             Level::Warning => slog::Level::Warning,
@@ -271,7 +271,7 @@ impl Serialize for Level {
     where
         S: Serializer,
     {
-        let level: slog::Level = self.into();
+        let level: slog::Level = (*self).into();
         let level = level.as_str().to_lowercase();
         serializer.serialize_str(&level)
     }
@@ -328,7 +328,7 @@ impl<'de> Deserialize<'de> for Level {
 
 
 /// Timestamp format and timezone.
-/// 
+///
 /// Defaults to [`Rfc3339Utc`](Timestamp::Rfc3339Utc).
 #[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
 pub enum Timestamp {

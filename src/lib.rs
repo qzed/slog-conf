@@ -58,11 +58,15 @@ extern crate failure;
 #[macro_use]
 extern crate lazy_static;
 
+#[macro_use]
 extern crate slog;
 extern crate slog_async;
 
 #[cfg(any(feature = "plain", feature = "term"))]
 extern crate slog_term;
+
+#[cfg(feature = "json")]
+extern crate slog_json;
 
 extern crate chrono;
 
@@ -91,6 +95,9 @@ pub use ty::plain::{Config as PlainConfig, Factory as PlainFactory};
 #[cfg(feature = "term")]
 pub use ty::term::{Config as TermConfig, Factory as TermFactory};
 
+#[cfg(feature = "json")]
+pub use ty::json::{Config as JsonConfig, Factory as JsonFactory};
+
 
 /// The name of the field containing the type of a serialized logger
 /// configuration.
@@ -109,6 +116,8 @@ pub const SUPPORTED_TYPES: &[&str] = &[
     "plain",
     #[cfg(feature = "term")]
     "term",
+    #[cfg(feature = "json")]
+    "json",
 ];
 
 /// Returns a reference to the default deserializer-stub registry.
@@ -174,6 +183,9 @@ impl Default for Deserializers {
         #[cfg(feature = "term")]
         reg.register("term", TermConfig::deserialize_config);
 
+        #[cfg(feature = "json")]
+        reg.register("json", JsonConfig::deserialize_config);
+
         reg
     }
 }
@@ -196,6 +208,9 @@ impl Default for Factories<(Async, AsyncGuard)> {
 
         #[cfg(feature = "term")]
         reg.register(TermFactory);
+
+        #[cfg(feature = "json")]
+        reg.register(JsonFactory);
 
         reg
     }
