@@ -120,42 +120,42 @@ where
     let builder = match cfg.format {
         Format::Basic => match cfg.timestamp {
             Timestamp::Rfc3339Utc => builder.add_key_value(o!(
-                "ts" => PushFnValue(timestamp_iso8601_utc),
-                "level" => FnValue(|r| r.level().as_short_str()),
                 "msg" => PushFnValue(|r, s| s.emit(r.msg())),
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "ts" => PushFnValue(timestamp_iso8601_utc),
             )),
             Timestamp::Rfc3339Local => builder.add_key_value(o!(
-                "ts" => PushFnValue(timestamp_iso8601_loc),
-                "level" => FnValue(|r| r.level().as_short_str()),
                 "msg" => PushFnValue(|r, s| s.emit(r.msg())),
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "ts" => PushFnValue(timestamp_iso8601_loc),
             )),
         },
         Format::Tagged => match cfg.timestamp {
             Timestamp::Rfc3339Utc => builder.add_key_value(o!(
-                "ts" => PushFnValue(timestamp_iso8601_utc),
-                "level" => FnValue(|r| r.level().as_short_str()),
                 "msg" => PushFnValue(|r, s| s.emit(r.msg())),
                 "tag" => OptionalTag,
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "ts" => PushFnValue(timestamp_iso8601_utc),
             )),
             Timestamp::Rfc3339Local => builder.add_key_value(o!(
-                "ts" => PushFnValue(timestamp_iso8601_loc),
-                "level" => FnValue(|r| r.level().as_short_str()),
                 "msg" => PushFnValue(|r, s| s.emit(r.msg())),
                 "tag" => OptionalTag,
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "ts" => PushFnValue(timestamp_iso8601_loc),
             )),
         },
         Format::Winston => match cfg.timestamp {
             Timestamp::Rfc3339Utc => builder.add_key_value(o!(
-                "timestamp" => PushFnValue(timestamp_iso8601_utc),
-                "level" => FnValue(|r| r.level().as_short_str()),
                 "message" => PushFnValue(|r, s| s.emit(r.msg())),
                 "label" => OptionalTag,
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "timestamp" => PushFnValue(timestamp_iso8601_utc),
             )),
             Timestamp::Rfc3339Local => builder.add_key_value(o!(
-                "timestamp" => PushFnValue(timestamp_iso8601_loc),
-                "level" => FnValue(|r| r.level().as_short_str()),
                 "message" => PushFnValue(|r, s| s.emit(r.msg())),
                 "label" => OptionalTag,
+                "level" => FnValue(|r| r.level().as_short_str()),
+                "timestamp" => PushFnValue(timestamp_iso8601_loc),
             )),
         },
     };
