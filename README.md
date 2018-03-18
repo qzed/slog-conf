@@ -21,7 +21,7 @@ This crate is in a prototype-state and is thus not (yet) on [`crates.io`](https:
 If you still want to use this crate, simply add
 
 ```toml
-slog-conf = { git = "github.com/qzed/slog-conf", branch = "master" }
+slog-conf = { git = "https://github.com/qzed/slog-conf", branch = "master" }
 ```
 
 to the `[dependencies]` section in your `Cargo.toml` file.
