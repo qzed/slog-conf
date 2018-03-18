@@ -39,4 +39,5 @@ fn main() {
     debug!(log, "a debug message"; "f" => "g");
     debug!(log, "another debug message");
     error!(log, "an error message");
+    error!(log, #"test", "a tagged error message");
 }
