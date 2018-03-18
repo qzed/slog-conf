@@ -1,6 +1,6 @@
 type = "json"
 target = "stdout"
-format = "basic"
+format = "tagged"
 level = "debug"
 timestamp = "rfc3339-utc"
 newlines = true
@@ -20,7 +20,11 @@ pretty = false
 
 # => format
 # can be one of
-# - "basic" (default, repeats every piece of information on each line)
+# - "basic" (default, contains timestamp as ts, level, and message as msg)
+# - "tagged" (contains timestamp as ts, level, an optional tag, and the
+#   message as msg)
+# - "winston" (a winston-style format, contains timestamp, level, an optional
+#   tag as label, and the message)
 
 # => level
 # filter level
