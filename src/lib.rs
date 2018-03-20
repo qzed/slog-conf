@@ -1,6 +1,6 @@
 //! Highly customizable runtime-configuration for slog-rs/slog with
 //! opinionated defaults.
-//! 
+//!
 //! # Overview
 //!
 //! This crate is roughly divided into two parts:
@@ -9,7 +9,7 @@
 //! 2. Construction of a `Drain` (or `Logger`) from a configuration object.
 //!
 //! Both aspects can be configured, all defaults can be completely replaced.
-//! 
+//!
 //! Most of the functionality is centered around the [`Config`](Config) trait
 //! and trait-objects of that type. This trait describes a configuration with
 //! which a logger (or drain) can be built.
@@ -20,24 +20,24 @@
 //! detail. Configurations should always be serialized as trait-object,
 //! otherwise their `type` tag will not be included during serialization and
 //! thus deserialization will fail.
-//! 
+//!
 //! Deserialization of `Box<Config>` can be acheived by use of the `deserialize`
 //! function of a [`Deserializers`](Deserializers)-registry. A default registry
 //! is provided by the [`deserializers`](deserializers)-method. This default
 //! registry will be used if `Box<Config>` is directly deserialized.
-//! 
+//!
 //! Custom deserialization can, for example, be implemented with a
 //! newtype-wrapper for `Box<Config>` and a custom registry.
-//!  
+//!
 //! ## Building a Logger
 //!
 //! Constructing a logger from a [`Config`](Config) trait-object can be done
 //! via a [`Factories`](Factories) registry. A default registry is provided
 //! via the [`factories`](factories)-method. [`build`](build) is a
 //! convenience-method using this default registry to build a `Drain`.
-//! 
+//!
 //! ## Customizable Features for Compile-Time Configuration
-//! 
+//!
 //! The configuration types and default factories supported by this crate can
 //! be found in the [`ty`](ty) module and can be configured via the
 //! feature-set of this crate. For each supported type exists is a
@@ -293,6 +293,40 @@ impl Config {
     pub fn downcast_mut<T: Config>(&mut self) -> Option<&mut T> {
         if self.type_id() == TypeId::of::<T>() {
             unsafe { Some(&mut *(self as *mut Config as *mut T)) }
+        } else {
+            None
+        }
+    }
+
+    /// Apply the given reference-visitor to this configuration.
+    ///
+    /// The visitor will only be executed if the type of this configuration is
+    /// `T`, and the result provided by the visitor will be returned. Otherwise
+    /// `None` will be returned.
+    pub fn apply_ref<T, R, F>(&self, visitor: F) -> Option<R>
+    where
+        T: Config + Sized,
+        F: FnOnce(&T) -> R,
+    {
+        if let Some(config) = self.downcast_ref::<T>() {
+            Some(visitor(config))
+        } else {
+            None
+        }
+    }
+
+    /// Apply the given mutable-reference-visitor to this configuration.
+    ///
+    /// The visitor will only be executed if the type of this configuration is
+    /// `T`, and the result provided by the visitor will be returned. Otherwise
+    /// `None` will be returned.
+    pub fn apply_mut<T, R, F>(&mut self, visitor: F) -> Option<R>
+    where
+        T: Config + Sized,
+        F: FnOnce(&mut T) -> R,
+    {
+        if let Some(config) = self.downcast_mut::<T>() {
+            Some(visitor(config))
         } else {
             None
         }
