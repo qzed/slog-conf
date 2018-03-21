@@ -87,6 +87,10 @@ fn build(cfg: &Config) -> Result<(Async, AsyncGuard), Error> {
                 OpenMode::New => opt.create_new(true).write(true),
             };
 
+            if let Some(parent) = path.parent() {
+                std::fs::create_dir_all(parent)?;
+            }
+
             build_1(cfg, PlainDecorator::new(opt.open(path)?))
         },
     }
