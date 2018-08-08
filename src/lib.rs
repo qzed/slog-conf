@@ -257,7 +257,7 @@ impl From<std::io::Error> for Error {
 
 
 /// A configuration describing how a logger should be created.
-pub trait Config: erased_serde::Serialize + 'static {
+pub trait Config: erased_serde::Serialize + std::fmt::Debug + 'static {
     /// The type-tag of this configuration.
     fn ty(&self) -> &'static str;
 
