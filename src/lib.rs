@@ -443,8 +443,8 @@ impl<T> Factories<T> {
 
     /// Remove a configuration-type and its associated factory from this
     /// registry via the `TypeId` of this configuration.
-    pub fn deregister_id(&mut self, id: &TypeId) {
-        self.store.remove(id);
+    pub fn deregister_id(&mut self, id: TypeId) {
+        self.store.remove(&id);
     }
 
     /// Return `true` if the provided configuration-type is associated with a
@@ -457,8 +457,8 @@ impl<T> Factories<T> {
     }
 
     /// Return `true` if the provided `TypeId` is associated with a `Factory`.
-    pub fn is_registered_id(&self, id: &TypeId) {
-        self.store.contains_key(id);
+    pub fn is_registered_id(&self, id: TypeId) {
+        self.store.contains_key(&id);
     }
 
     /// Clears this registry, removing all elements.
