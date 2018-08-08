@@ -267,8 +267,8 @@ impl Into<slog::Level> for Level {
 }
 
 impl Level {
-    fn to_str_lowercase(&self) -> &'static str {
-        match *self {
+    fn to_str_lowercase(self) -> &'static str {
+        match self {
             Level::Critical => "critical",
             Level::Error => "error",
             Level::Warning => "warning",

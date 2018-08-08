@@ -99,6 +99,7 @@ impl ::Factory for Factory {
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(trivially_copy_pass_by_ref))]
 fn build(cfg: &Config) -> Result<(Async, AsyncGuard), Error> {
     let builder = match cfg.target {
         Target::Stdout => TermDecorator::new().stdout(),
@@ -114,6 +115,7 @@ fn build(cfg: &Config) -> Result<(Async, AsyncGuard), Error> {
     build_1(cfg, builder.build())
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(trivially_copy_pass_by_ref))]
 fn build_1<D>(cfg: &Config, decorator: D) -> Result<(Async, AsyncGuard), Error>
 where
     D: Decorator + Send + 'static,
@@ -150,6 +152,7 @@ where
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(trivially_copy_pass_by_ref))]
 fn build_2<D>(_cfg: &Config, drain: D) -> Result<(Async, AsyncGuard), Error>
 where
     D: Drain<Err = Never, Ok = ()> + Send + 'static,
