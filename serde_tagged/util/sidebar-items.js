@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["TagString","A type that can be used to as a potentially temporary string-based tag."]],"mod":[["erased","Utilities for de-/serialization with `erased_serde`."]]});

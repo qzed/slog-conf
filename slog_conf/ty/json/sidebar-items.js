@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Format","The json-format in which a record should be displayed."]],"struct":[["Config","Configuration for a logger of type `json`."],["Factory","Factory for an `Async` drain of type `json`."]]});

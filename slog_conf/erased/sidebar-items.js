@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["DeserializeConfig","A trait providing a deserialization-mehtod for `Config` trait-objects with the correct signature required for `BoxFnSeed`."]]});

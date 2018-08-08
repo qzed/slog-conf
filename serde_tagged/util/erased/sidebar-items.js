@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SerializeErased","A serializable type that serializes the enclosed value using `erased_serde`."]]});

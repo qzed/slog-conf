@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `slog_conf` crate."><meta name="keywords" content="rust, rustlang, rust-lang, slog_conf"><title>slog_conf - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Crate slog_conf</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'slog_conf', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>slog_conf</a></span><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/slog_conf/lib.rs.html#1-582' title='goto source code'>[src]</a></span></h1><div class='docblock'><p>Highly customizable runtime-configuration for slog-rs/slog with
+opinionated defaults.</p>
+<h1 id="overview" class="section-header"><a href="#overview">Overview</a></h1>
+<p>This crate is roughly divided into two parts:</p>
+<ol>
+<li>De-/serialization of configuration files.</li>
+<li>Construction of a <code>Drain</code> (or <code>Logger</code>) from a configuration object.</li>
+</ol>
+<p>Both aspects can be configured, all defaults can be completely replaced.</p>
+<p>Most of the functionality is centered around the <a href="../slog_conf/trait.Config.html"><code>Config</code></a> trait
+and trait-objects of that type. This trait describes a configuration with
+which a logger (or drain) can be built.</p>
+<h2 id="de-serialization" class="section-header"><a href="#de-serialization">De-/Serialization</a></h2>
+<p>Serialization of configurations is straight-forward except for a small
+detail. Configurations should always be serialized as trait-object,
+otherwise their <code>type</code> tag will not be included during serialization and
+thus deserialization will fail.</p>
+<p>Deserialization of <code>Box&lt;Config&gt;</code> can be acheived by use of the <code>deserialize</code>
+function of a <a href="../slog_conf/struct.Deserializers.html"><code>Deserializers</code></a>-registry. A default registry
+is provided by the <a href="../slog_conf/fn.deserializers.html"><code>deserializers</code></a>-method. This default
+registry will be used if <code>Box&lt;Config&gt;</code> is directly deserialized.</p>
+<p>Custom deserialization can, for example, be implemented with a
+newtype-wrapper for <code>Box&lt;Config&gt;</code> and a custom registry.</p>
+<h2 id="building-a-logger" class="section-header"><a href="#building-a-logger">Building a Logger</a></h2>
+<p>Constructing a logger from a <a href="../slog_conf/trait.Config.html"><code>Config</code></a> trait-object can be done
+via a <a href="../slog_conf/struct.Factories.html"><code>Factories</code></a> registry. A default registry is provided
+via the <a href="../slog_conf/fn.factories.html"><code>factories</code></a>-method. <a href="../slog_conf/fn.build.html"><code>build</code></a> is a
+convenience-method using this default registry to build a <code>Drain</code>.</p>
+<h2 id="customizable-features-for-compile-time-configuration" class="section-header"><a href="#customizable-features-for-compile-time-configuration">Customizable Features for Compile-Time Configuration</a></h2>
+<p>The configuration types and default factories supported by this crate can
+be found in the <a href="../slog_conf/ty/index.html"><code>ty</code></a> module and can be configured via the
+feature-set of this crate. For each supported type exists is a
+corresponding feature with the same name enabling support for said type.
+By default, all types are enabled.</p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Re-exports</a></h2>
+<table><tr><td><code>pub use ty::null::<a class="struct" href="../slog_conf/ty/null/struct.Config.html" title="struct slog_conf::ty::null::Config">Config</a> as NullConfig;</code></td></tr><tr><td><code>pub use ty::null::<a class="struct" href="../slog_conf/ty/null/struct.Factory.html" title="struct slog_conf::ty::null::Factory">Factory</a> as NullFactory;</code></td></tr><tr><td><code>pub use ty::plain::<a class="struct" href="../slog_conf/ty/plain/struct.Config.html" title="struct slog_conf::ty::plain::Config">Config</a> as PlainConfig;</code></td></tr><tr><td><code>pub use ty::plain::<a class="struct" href="../slog_conf/ty/plain/struct.Factory.html" title="struct slog_conf::ty::plain::Factory">Factory</a> as PlainFactory;</code></td></tr><tr><td><code>pub use ty::term::<a class="struct" href="../slog_conf/ty/term/struct.Config.html" title="struct slog_conf::ty::term::Config">Config</a> as TermConfig;</code></td></tr><tr><td><code>pub use ty::term::<a class="struct" href="../slog_conf/ty/term/struct.Factory.html" title="struct slog_conf::ty::term::Factory">Factory</a> as TermFactory;</code></td></tr><tr><td><code>pub use ty::json::<a class="struct" href="../slog_conf/ty/json/struct.Config.html" title="struct slog_conf::ty::json::Config">Config</a> as JsonConfig;</code></td></tr><tr><td><code>pub use ty::json::<a class="struct" href="../slog_conf/ty/json/struct.Factory.html" title="struct slog_conf::ty::json::Factory">Factory</a> as JsonFactory;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="common/index.html"
+                                  title='mod slog_conf::common'>common</a></td>
+                           <td class='docblock-short'>
+                                <p>Common configuration types.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="erased/index.html"
+                                  title='mod slog_conf::erased'>erased</a></td>
+                           <td class='docblock-short'>
+                                <p>Utilities for type-erased de-/serialization.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="ty/index.html"
+                                  title='mod slog_conf::ty'>ty</a></td>
+                           <td class='docblock-short'>
+                                <p>Default configurations and factories.</p>
+
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Deserializers.html"
+                                  title='struct slog_conf::Deserializers'>Deserializers</a></td>
+                           <td class='docblock-short'>
+                                <p>A registry for <code>DeserializeSeed</code> implementations for deserialization of
+<code>Config</code> trait-objects.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Factories.html"
+                                  title='struct slog_conf::Factories'>Factories</a></td>
+                           <td class='docblock-short'>
+                                <p>A registry for factories.</p>
+
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.Error.html"
+                                  title='enum slog_conf::Error'>Error</a></td>
+                           <td class='docblock-short'>
+                                <p>An error that can occur when building a logger.</p>
+
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.SUPPORTED_TYPES.html"
+                                  title='constant slog_conf::SUPPORTED_TYPES'>SUPPORTED_TYPES</a></td>
+                           <td class='docblock-short'>
+                                <p>All logger types supported by this crate.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.TYPE_KEY.html"
+                                  title='constant slog_conf::TYPE_KEY'>TYPE_KEY</a></td>
+                           <td class='docblock-short'>
+                                <p>The name of the field containing the type of a serialized logger
+configuration.</p>
+
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="trait" href="trait.Config.html"
+                                  title='trait slog_conf::Config'>Config</a></td>
+                           <td class='docblock-short'>
+                                <p>A configuration describing how a logger should be created.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="trait" href="trait.Factory.html"
+                                  title='trait slog_conf::Factory'>Factory</a></td>
+                           <td class='docblock-short'>
+                                <p>A factory that can build a target from a configuration.</p>
+
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.build.html"
+                                  title='fn slog_conf::build'>build</a></td>
+                           <td class='docblock-short'>
+                                <p>Builds a <code>Drain</code> from the given <code>Config</code> using the default factories.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.deserializers.html"
+                                  title='fn slog_conf::deserializers'>deserializers</a></td>
+                           <td class='docblock-short'>
+                                <p>Returns a reference to the default deserializer-stub registry.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.factories.html"
+                                  title='fn slog_conf::factories'>factories</a></td>
+                           <td class='docblock-short'>
+                                <p>Returns a reference to the default <code>Drain</code> factories.</p>
+
+                           </td>
+                       </tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "slog_conf";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `serde_tagged` crate."><meta name="keywords" content="rust, rustlang, rust-lang, serde_tagged"><title>serde_tagged - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Crate serde_tagged</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'serde_tagged', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>serde_tagged</a></span><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/serde_tagged/lib.rs.html#1-74' title='goto source code'>[src]</a></span></h1><div class='docblock'><h1 id="tagging-values-for-de-serialization" class="section-header"><a href="#tagging-values-for-de-serialization">Tagging values for de-/serialization</a></h1>
+<p><code>serde</code> does not provide a way to store type-information during
+serialization, thus de-/serializing trait-objects requires a considerable
+amount of boilerplate code to work. This library aims to help with that by
+providing multiple ways to store information, i.e. a tag, associated with
+a value and later retreive that information during deserialization.
+The retreived tag information can then be used to select a type-specific
+deserializer.</p>
+<p>A tag can be almost any type, its requirements mainly depend on what you
+want to use it for. It should implement <code>Serialize</code> and <code>Deserialize</code>
+(otherwise it would of course be impossible to de-/serialize it). It
+should also provide means for comparison, which is required to access the
+specific deserializer associated with that tag (unless the tag serves
+another purpose). Further restrictions on the tag type may be imposed by
+the data- and tag-format you choose (e.g. JSON only allows strings as keys
+in JSON-objects).</p>
+<p>This library provides multiple formats to store (and retreive) tags, that
+are somewhat similar to the way enums can be tagged in <code>serde</code>. The
+(currently) supported formats are:</p>
+<ul>
+<li><a href="../serde_tagged/ser/external/index.html">externally tagged</a>, as in <code>{ &lt;tag&gt; =&gt; &lt;value&gt; }</code></li>
+<li><a href="../serde_tagged/ser/internal/index.html">internally tagged</a> (i.e. embedded in the value)</li>
+<li><a href="../serde_tagged/ser/adj/tuple/index.html">adjacently tagged using tuples</a>, as in
+<code>( &lt;tag&gt;, &lt;value&gt; )</code></li>
+<li><a href="../serde_tagged/ser/adj/map/index.html">adjacently tagged using maps</a>, as in
+<code>{ &lt;tag-key&gt; =&gt; &lt;tag&gt;, &lt;value-key&gt; =&gt; &lt;value&gt; }</code></li>
+<li><a href="../serde_tagged/ser/adj/struc/index.html">adjacently tagged using structs</a>, as in
+<code>{ &lt;tag-key&gt;: &lt;tag&gt;, &lt;value-key&gt;: &lt;value&gt; }</code></li>
+</ul>
+<h2 id="a-quick-overview" class="section-header"><a href="#a-quick-overview">A quick overview</a></h2>
+<p>This crate is separated into two main modules: <a href="../serde_tagged/ser/index.html"><code>ser</code></a> for
+serialization and <a href="../serde_tagged/de/index.html"><code>de</code></a> for deserialization. Both modules contain
+further submodules, each representing a separate tagging-format.</p>
+<h3 id="serialization" class="section-header"><a href="#serialization">Serialization</a></h3>
+<p>For each tagging-format both, a <code>serialize</code> function and a <code>Serializer</code>
+are provided, which allow for values to be serialized with a pre-existing
+serializer defining the data format, a tag, and possibly further
+format-specific parameters. You should always prefer the <code>serialize</code>
+function to the <code>Serializer</code> as it, in most cases, allows for a better
+performance.</p>
+<p><strong>Note:</strong>
+Tagged serialization requires access to a <code>Serializer</code>, however some data
+formats do not provide direct access to the serializer. In such a case you
+could create a wrapper-type with a custom <code>Serialize</code> implementation.</p>
+<h3 id="deserialization" class="section-header"><a href="#deserialization">Deserialization</a></h3>
+<p>For deserialization, the <code>deserialize</code> function (and in some cases also
+variants of it) are provided in the respective format-modules. Have a look
+the respective function documentation for more details.</p>
+<h2 id="examples" class="section-header"><a href="#examples">Examples</a></h2>
+<p>For some examples have a look at the examples directory in the repository.</p>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="de/index.html"
+                                  title='mod serde_tagged::de'>de</a></td>
+                           <td class='docblock-short'>
+                                <p>Deserialization of tagged values.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="ser/index.html"
+                                  title='mod serde_tagged::ser'>ser</a></td>
+                           <td class='docblock-short'>
+                                <p>Serialization of tagged values.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="util/index.html"
+                                  title='mod serde_tagged::util'>util</a></td>
+                           <td class='docblock-short'>
+                                <p>Utilities for de-/serialization.</p>
+
+                           </td>
+                       </tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "serde_tagged";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

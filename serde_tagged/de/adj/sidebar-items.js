@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["map","Deserialization of adjacently tagged values using maps."],["struc","Deserialization of adjacently tagged values using structs."],["tuple","Deserialization of adjacently tagged values using tuples."]]});

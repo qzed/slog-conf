@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Config","Configuration for a logger of type `null`."],["Factory","Factory for an `Async` drain of type `null`."]]});

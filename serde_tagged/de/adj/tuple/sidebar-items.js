@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["deserialize","Deserialize a tuple-based adjacently tagged value."],["deserialize_seed","Deserialize a tuple-based adjacently tagged value with the given tag-seed."]],"struct":[["Visitor","A visitor that can be used to deserialize a tuple-based adjacently tagged value."]]});

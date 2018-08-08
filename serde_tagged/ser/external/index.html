@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `external` mod in crate `serde_tagged`."><meta name="keywords" content="rust, rustlang, rust-lang, external"><title>serde_tagged::ser::external - Rust</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Module external</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../../index.html'>serde_tagged</a>::<wbr><a href='../index.html'>ser</a></p><script>window.sidebarCurrent = {name: 'external', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>serde_tagged</a>::<wbr><a href='../index.html'>ser</a>::<wbr><a class="mod" href=''>external</a></span><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../../src/serde_tagged/ser/external.rs.html#1-767' title='goto source code'>[src]</a></span></h1><div class='docblock'><p>Serialization of externally tagged values.</p>
+<p>Tagging values externally will apply the tag via a mapping from tag to
+value, thus serializing a tagged value with the functionality provided in
+this module will always result in a map-object with a single entry.</p>
+<p>This format is similar to the externally-tagged enum format provided by
+serde, however allows for various tag types (not only <code>str</code> and <code>u32</code>).</p>
+<h1 id="examples-serializing-to-json" class="section-header"><a href="#examples-serializing-to-json">Examples serializing to JSON</a></h1><h2 id="a-primitive" class="section-header"><a href="#a-primitive">A primitive</a></h2>
+<p>Serializing a value</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">foo</span>: <span class="ident">i32</span> <span class="op">=</span> <span class="number">42</span>;
+
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">serializer</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">Serializer</span>::<span class="ident">new</span>(<span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">stdout</span>());
+<span class="ident">serde_tagged</span>::<span class="ident">ser</span>::<span class="ident">external</span>::<span class="ident">serialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">serializer</span>, <span class="string">&quot;bar&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">foo</span>).<span class="ident">unwrap</span>();</pre>
+<p>with a tag value of <code>&quot;bar&quot;</code> will produce</p>
+<pre><code class="language-json">{ &quot;bar&quot;: 42 }
+</code></pre>
+<h2 id="a-simple-struct" class="section-header"><a href="#a-simple-struct">A Simple struct</a></h2>
+<p>Serializing a value <code>foo</code> with</p>
+
+<pre class="rust rust-example-rendered">
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>)]</span>
+<span class="kw">struct</span> <span class="ident">Foo</span> {
+    <span class="ident">bar</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+}
+
+<span class="kw">let</span> <span class="ident">foo</span> <span class="op">=</span> <span class="ident">Foo</span> { <span class="ident">bar</span>: <span class="string">&quot;baz&quot;</span> };
+
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">serializer</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">Serializer</span>::<span class="ident">new</span>(<span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">stdout</span>());
+<span class="ident">serde_tagged</span>::<span class="ident">ser</span>::<span class="ident">external</span>::<span class="ident">serialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">serializer</span>, <span class="string">&quot;my-tag&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">foo</span>).<span class="ident">unwrap</span>();</pre>
+<p>with a tag-value of <code>&quot;my-tag&quot;</code> will produce the following JSON output:</p>
+<pre><code class="language-json">{ &quot;my-tag&quot;: { &quot;bar&quot;: &quot;baz&quot; } }
+</code></pre>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Serializer.html"
+                                  title='struct serde_tagged::ser::external::Serializer'>Serializer</a></td>
+                           <td class='docblock-short'>
+                                <p>A serializer that applies a tag externally to the provided value and
+serializes them as key-value pair.</p>
+
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.serialize.html"
+                                  title='fn serde_tagged::ser::external::serialize'>serialize</a></td>
+                           <td class='docblock-short'>
+                                <p>Applies a tag externally to the specified value and serializes them using
+the provided serializer.</p>
+
+                           </td>
+                       </tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../../";window.currentCrate = "serde_tagged";</script><script src="../../../aliases.js"></script><script src="../../../main.js"></script><script defer src="../../../search-index.js"></script></body></html>

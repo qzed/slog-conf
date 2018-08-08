@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["serialize","Serializes the specified tag and value as tuple."]],"struct":[["Serializer","A serializer that serializes the specified tag and value as tuple."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Color","The color-settings for the `TermDecorator`."],["Format","The format in which the logger should display its information."]],"struct":[["Config","Configuration for a logger of type `term`."],["Factory","Factory for an `Async` drain of type `term`."]]});
